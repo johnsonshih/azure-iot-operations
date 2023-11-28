@@ -6,10 +6,10 @@
       "value": "aiotest-aksee1"
     },
     "clusterLocation": {
-      "value": "westUs3"
+      "value": "westus3"
     },
     "location": {
-      "value": "westUs3"
+      "value": "westus3"
     },
     "simulatePLC": {
       "value": false
