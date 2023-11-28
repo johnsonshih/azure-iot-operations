@@ -586,7 +586,7 @@
         "autoUpgradeMinorVersion": false,
         "scope": "[variables('AIO_EXTENSION_SCOPE')]",
         "configurationSettings": {
-          "webhookConfiguration.enabled": "false"
+          "webhookConfiguration.enabled": "true"
         }
       },
       "dependsOn": [
