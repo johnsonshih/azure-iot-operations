@@ -10,18 +10,18 @@ set -e
 # The below variables are used in the following commands. Please update them #
 # to reflect the details for your Azure subscription and your cluster.       #
 ##############################################################################
-SUBSCRIPTION=<your subscription ID>
-RESOURCE_GROUP=<your resource group>
-CLUSTER_NAME=<your connected cluster name>
-TENANT_ID=<your tenant ID>
-AKV_SP_CLIENTID=<your AKV service principal client ID>
-AKV_SP_CLIENTSECRET=<your AKV service principal client secret>
-AKV_NAME=<your AKV name>
+$SUBSCRIPTION="c7730c8e-2304-477c-923a-77231a64a03b"
+$RESOURCE_GROUP="aiotest-rg"
+$CLUSTER_NAME="aiotest-aksee1"
+$TENANT_ID="437be4d7-b3e3-44ef-ac18-56186c299630"
+$AKV_SP_CLIENTID="635930e8-999f-44fa-a5f3-f2398497e044"
+$AKV_SP_CLIENTSECRET="-mI8Q~f1pkcQji.y5lR~7nZTr29KW_V5v~15FbHS"
+$AKV_NAME="aiotest-kv2"
 
-PLACEHOLDER_SECRET_NAME=PlaceholderSecret
-AKV_PROVIDER_POLLING_INTERVAL=1h
-AKV_SECRET_PROVIDER_NAME=akvsecretsprovider
-DEFAULT_NAMESPACE=azure-iot-operations
+$PLACEHOLDER_SECRET_NAME="PlaceholderSecret"
+$AKV_PROVIDER_POLLING_INTERVAL="1h"
+$AKV_SECRET_PROVIDER_NAME="akvsecretsprovider"
+$DEFAULT_NAMESPACE="azure-iot-operations"
 
 ##############################################################################
 # The below commands are used log in to your Azure account and subscription. #
@@ -40,12 +40,7 @@ az account set --subscription $SUBSCRIPTION
 # secrets to be updated on the cluster.                                      #
 ##############################################################################
 echo "Adding the AKV Provider CSI Driver"
-az k8s-extension create --cluster-name $CLUSTER_NAME --resource-group $RESOURCE_GROUP \
---cluster-type connectedClusters \
---extension-type Microsoft.AzureKeyVaultSecretsProvider \
---name $AKV_SECRET_PROVIDER_NAME \
---configuration-settings secrets-store-csi-driver.enableSecretRotation=true secrets-store-csi-driver.rotationPollInterval=$AKV_PROVIDER_POLLING_INTERVAL secrets-store-csi-driver.syncSecret.enabled=false
-
+az k8s-extension create --cluster-name $CLUSTER_NAME --resource-group $RESOURCE_GROUP --cluster-type connectedClusters --extension-type Microsoft.AzureKeyVaultSecretsProvider --name $AKV_SECRET_PROVIDER_NAME --configuration-settings secrets-store-csi-driver.enableSecretRotation=true secrets-store-csi-driver.rotationPollInterval=$AKV_PROVIDER_POLLING_INTERVAL secrets-store-csi-driver.syncSecret.enabled=false 
 ##############################################################################
 # The below command will create the alice-springs namespace in your cluster. #
 # This is required for the SecretProviderClass custom resources as they must #
@@ -74,7 +69,7 @@ kubectl label secret aio-akv-sp secrets-store.csi.k8s.io/used=true --namespace $
 #                                                                            #
 ##############################################################################
 echo "Creating Azure IoT Operations Default SecretProviderClass"
-kubectl apply -f - <<EOF
+$aideuserConfig = @"
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
@@ -92,7 +87,9 @@ spec:
           objectType: secret
           objectVersion: ""
     tenantId: $TENANT_ID
-EOF
+"@
+Set-Content -Path "./default-spc.yaml"  -Value $aideuserConfig -Force
+kubectl apply -f "./default-spc.yaml" 
 
 echo "Creating Azure IoT Operations OPC-UA SecretProviderClasses"
 kubectl apply -f - <<EOF

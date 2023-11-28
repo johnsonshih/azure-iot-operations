@@ -3,13 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "clusterName": {
-      "value": "my-cluster"
+      "value": "aiotest-aksee1"
     },
     "clusterLocation": {
-      "value": "eastus2"
+      "value": "westUs3"
     },
     "location": {
-      "value": "eastus2"
+      "value": "westUs3"
     },
     "simulatePLC": {
       "value": false
